@@ -9,7 +9,7 @@ services:
     name: arthur-genai-engine
     runtime: image
     image:
-      url: docker.io/arthurplatform/genai-engine-cpu:2.1.x  # pin a release tag
+      url: docker.io/arthurplatform/genai-engine-cpu:latest  # pin a release tag
     plan: free  # 512MB RAM, 0.1 CPU, sleeps after 15min idle
     region: oregon
     healthCheckPath: /health
