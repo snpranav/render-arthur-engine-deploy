@@ -1,0 +1,41 @@
+# render.yaml
+databases:
+  - name: arthur-genai-db
+    databaseName: arthur_genai_engine
+    user: postgres
+    plan: basic-256mb  # or larger
+
+services:
+  - type: web
+    name: arthur-genai-engine
+    runtime: image
+    image:
+      url: docker.io/arthurplatform/genai-engine-cpu:2.1.x  # pin a release tag
+    plan: standard  # 2GB RAM minimum
+    region: oregon
+    healthCheckPath: /health
+    envVars:
+      - key: PORT
+        value: 3030
+      - key: POSTGRES_URL
+        fromDatabase: { name: arthur-genai-db, property: host }
+      - key: POSTGRES_PORT
+        fromDatabase: { name: arthur-genai-db, property: port }
+      - key: POSTGRES_USER
+        fromDatabase: { name: arthur-genai-db, property: user }
+      - key: POSTGRES_PASSWORD
+        fromDatabase: { name: arthur-genai-db, property: password }
+      - key: POSTGRES_DB
+        fromDatabase: { name: arthur-genai-db, property: database }
+      - key: POSTGRES_USE_SSL
+        value: "true"   # Render Postgres requires SSL
+      - key: ALLOW_ADMIN_KEY_GENERAL_ACCESS
+        value: enabled
+      - key: GENAI_ENGINE_INGRESS_URI
+        value: https://arthur-genai-engine.onrender.com
+      - key: GENAI_ENGINE_ADMIN_KEY
+        generateValue: true
+      - key: GENAI_ENGINE_SECRET_STORE_KEY
+        generateValue: true
+      - key: OPENAI_API_KEY
+        sync: false  # set manually in dashboard
